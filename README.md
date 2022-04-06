@@ -14,3 +14,7 @@ A reworked and updated version KoreanDude's [sm_buycommands](https://github.com/
 - Add translation file instead of hard coding plugin messages
 - Possibly add per-weapon cooldown system/per-weapon restriction system (?)
 - Add a `sm_guns` menu to buy weapons and/or save loadouts (?)
+
+## Update Log
+#### Version 2.0.1
+- Fixed some incorrect messages
