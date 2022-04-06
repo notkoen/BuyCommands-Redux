@@ -1,6 +1,8 @@
 # BuyCommands-Redux
 A reworked and updated version KoreanDude's [sm_buycommands](https://github.com/KoreanDude/csgo-ze-plugins/blob/master/Buy%20Commands/sm_buycommands.sp) plugin.
 
+Special thanks to [Detroid](https://steamcommunity.com/id/2132423/) for testing and reporting errors in the plugin
+
 ## Changes
 - Updated plugin to utilize New-Style Declarations
 - Added Incendiary Grenade, TA Grenade, and Snowball grenade options
