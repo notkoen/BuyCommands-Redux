@@ -1,0 +1,300 @@
+"Phrases"
+{
+	"Plugin Prefix"
+	{
+		"en"		"{green}[Buy Command]"
+	}
+
+	"Purchase Disabled"
+	{
+        // 1: Plugin Prefix
+        // 2: Weapon class name
+		"#format"	"{1:t},{2:t}"
+		"en"		"{1} {orange}'{2}' {default}purchases have been {red}disabled{default}."
+	}
+
+	"Purchase Cooldown"
+	{
+        // 1: Plugin Prefix
+        // 2: Weapon Name
+        // 3: Rebuy cooldown (in seconds)
+		"#format"	"{1:t},{2:t},{3:d}"
+		"en"		"{1} {default}You can purchase a(n) {orange}'{2}' {default}again in {green}{3} {default}seconds."
+	}
+
+	"Purchase"
+	{
+        // 1: Plugin Prefix
+        // 2: Weapon Name
+        // 3: Price of Purchase
+		"#format"	"{1:t},{2:t},{3:d}"
+		"en"		"{1} {default}You purchased {orange}'{2}' {default}for {green}${3}"
+	}
+    
+    "Purchase Remaining"
+    {
+        // 1: Plugin Prefix
+        // 2: Weapon Name
+        // 3: Price of Purchase
+        // 4: Remaining Purchases
+        "#format"   "{1:t},{2:t},{3:d},{4:d}"
+        "en"        "{1} {default}You purchased {orange}'{2}' {default}for {green}${3} {default}(Remaining purchases: {green}{4}{default})"
+    }
+    
+    "Max Amount Purchased"
+    {
+        // 1: Plugin Prefix
+        // 2: Max number of purchases
+        // 3: Weapon Name
+        "#format"   "{1:t},{2:d},{3:t}"
+        "en"        "{1} {default}You can only purchase a maximum of {2} {orange}'{3}s' {default}per round."
+    }
+
+	"Not Enough Money"
+	{
+        // 1: Plugin Prefix
+        // 2: Amount of Money Missing
+		"#format"	"{1:t},{2:d}"
+		"en"		"{1} {default}You do not have enough money (Missing {green}${2}{default})"
+	}
+
+	"ar"
+	{
+		"en"		"Assault Rifle"
+	}
+
+	"smg"
+	{
+		"en"		"Sub-Machine Gun"
+	}
+
+	"sniper"
+	{
+		"en"		"Sniper Rifle"
+	}
+
+	"lmg"
+	{
+		"en"		"Light Machine Gun"
+	}
+
+	"pistol"
+	{
+		"en"		"Pistol"
+	}
+
+	"shotgun"
+	{
+		"en"		"Shotgun"
+	}
+    
+    "armor"
+    {
+        "en"        "Kevlar"
+    }
+
+	"galil"
+	{
+		"en"		"Galil-AR"
+	}
+
+	"ak"
+	{
+		"en"		"AK-47"
+	}
+
+	"sg556"
+	{
+		"en"		"SG-556"
+	}
+
+	"m4"
+	{
+		"en"		"M4A4"
+	}
+
+	"m4s"
+	{
+		"en"		"M4A1-S"
+	}
+
+	"aug"
+	{
+		"en"		"AUG"
+	}
+
+	"famas"
+	{
+		"en"		"FAMAS"
+	}
+
+	"nova"
+	{
+		"en"		"Nova"
+	}
+
+	"xm"
+	{
+		"en"		"XM-1014"
+	}
+
+	"mag"
+	{
+		"en"		"Mag-7"
+	}
+
+	"sawed"
+	{
+		"en"		"Sawed-Off"
+	}
+
+	"mac"
+	{
+		"en"		"Mac-10"
+	}
+
+	"mp9"
+	{
+		"en"		"MP9"
+	}
+
+	"mp7"
+	{
+		"en"		"MP7"
+	}
+
+	"mp5"
+	{
+		"en"		"MP5-SD"
+	}
+
+	"ump"
+	{
+		"en"		"UMP-45"
+	}
+
+	"bizon"
+	{
+		"en"		"PP-Bizon"
+	}
+
+	"p90"
+	{
+		"en"		"P90"
+	}
+
+	"m249"
+	{
+		"en"		"M249"
+	}
+
+	"negev"
+	{
+		"en"		"Negev"
+	}
+
+	"scar"
+	{
+		"en"		"SCAR-20"
+	}
+
+	"awp"
+	{
+		"en"		"AWP"
+	}
+
+	"ssg"
+	{
+		"en"		"SSG-08"
+	}
+
+	"g3sg1"
+	{
+		"en"		"G3SG1"
+	}
+
+	"usp"
+	{
+		"en"		"USP-S"
+	}
+
+	"glock"
+	{
+		"en"		"Glock-18"
+	}
+
+	"p250"
+	{
+		"en"		"P250"
+	}
+
+	"deagle"
+	{
+		"en"		"Desert Eagle"
+	}
+
+	"tec9"
+	{
+		"en"		"Tec-9"
+	}
+
+	"p2000"
+	{
+		"en"		"HKP-2000"
+	}
+
+	"elites"
+	{
+		"en"		"Dual Berretas"
+	}
+
+	"fiveseven"
+	{
+		"en"		"Five-Seven"
+	}
+
+	"r8"
+	{
+		"en"		"R8 Revolver"
+	}
+
+	"cz"
+	{
+		"en"		"CZ-75"
+	}
+
+	"kevlar"
+	{
+		"en"		"Kevlar"
+	}
+
+	"he"
+	{
+		"en"		"HE Grenade"
+	}
+
+	"fb"
+	{
+		"en"		"Flashbang Grenade"
+	}
+
+	"de"
+	{
+		"en"		"Decoy Grenade"
+	}
+
+	"inc"
+	{
+		"en"		"Incendiary Grenade"
+	}
+
+	"snow"
+	{
+		"en"		"Snowball"
+	}
+
+	"tag"
+	{
+		"en"		"TA Grenade"
+	}
+}

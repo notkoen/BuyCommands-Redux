@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 #define PLUGIN_AUTHOR "Someone REWORKED by koen"
-#define PLUGIN_VERSION "2.0.2"
+#define PLUGIN_VERSION "2.1.0"
 
 #include <sourcemod>
 #include <sdktools>
@@ -324,6 +324,9 @@ public void OnPluginStart()
 	
 	/* Auto Execute Plugin Config */
 	AutoExecConfig(true, "BuyCommandsRedux");
+	
+	/* Load Translations */
+	LoadTranslations("buycommands.phrases");
 }
 
 public void OnClientConnected(int client)
@@ -404,13 +407,13 @@ public Action Command_Galil(int client, int args)
 	
 	if (!g_cvar_Enable_AR.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Assault Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "ar");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase {orange}'Galil AR' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "galil", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -420,14 +423,15 @@ public Action Command_Galil(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Galil AR' {default}for {green}$%i", g_GalilPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "galil", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
 			int weapon = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY);
-			if (weapon != -1) {
+			if (weapon != -1)
+			{
 				SDKHooks_DropWeapon(client, weapon);
 				GivePlayerItem(client, "weapon_galilar");
 			}
@@ -435,7 +439,7 @@ public Action Command_Galil(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase {orange}'Galil AR' {default}(Missing {green}$%i{default})", g_GalilPrice.IntValue - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -447,13 +451,13 @@ public Action Command_ak(int client, int args)
 	
 	if (!g_cvar_Enable_AR.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Assault Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "ar");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase an {orange}'AK-47' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "ak", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -463,7 +467,7 @@ public Action Command_ak(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased an {orange}'AK-47' {default}for {green}$%i", g_AKPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "ak", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -479,7 +483,7 @@ public Action Command_ak(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase an {orange}'AK-47' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -491,13 +495,13 @@ public Action Command_sg556(int client, int args)
 		
 	if (!g_cvar_Enable_AR.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Assault Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "ar");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'SG-556' {Default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "sg556", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -507,7 +511,7 @@ public Action Command_sg556(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'SG-556' {default}for {green}$%i", g_SG556Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "sg556", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -523,7 +527,7 @@ public Action Command_sg556(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'SG-556' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -535,13 +539,13 @@ public Action Command_m4a4(int client, int args)
 	
 	if (!g_cvar_Enable_AR.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Assault Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "ar");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase {orange}'M4A4' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "m4", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -551,14 +555,15 @@ public Action Command_m4a4(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'M4A4' {default}for {green}$%i", g_M4Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "m4", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
 			int weapon = GetPlayerWeaponSlot(client, CS_SLOT_PRIMARY);
-			if (weapon != -1) {
+			if (weapon != -1)
+			{
 				SDKHooks_DropWeapon(client, weapon);
 				GivePlayerItem(client, "weapon_m4a1");
 			}
@@ -566,7 +571,7 @@ public Action Command_m4a4(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'M4A4' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -578,13 +583,13 @@ public Action Command_m4a1s(int client, int args)
 	
 	if (!g_cvar_Enable_AR.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Assault Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "ar");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase {orange}'M4A1-S' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "m4s", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -594,7 +599,7 @@ public Action Command_m4a1s(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'M4A1-S' {default}for {green}$%i", g_M4SPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "m4s", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -610,7 +615,7 @@ public Action Command_m4a1s(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'M4A1-S' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -622,13 +627,13 @@ public Action Command_aug(int client, int args)
 	
 	if (!g_cvar_Enable_AR.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Assault Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "ar");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase an {orange}'AUG' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "aug", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -638,7 +643,7 @@ public Action Command_aug(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased an {orange}'AUG' {default}for {green}$%i", g_AUGPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "aug", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -654,7 +659,7 @@ public Action Command_aug(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase an {orange}'AUG' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -666,13 +671,13 @@ public Action Command_famas(int client, int args)
 	
 	if (!g_cvar_Enable_AR.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Assault Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "ar");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'FAMAS' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "famas", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -682,9 +687,9 @@ public Action Command_famas(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'FAMAS' {default}for {green}$%i", g_FAMASPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "famas", gunprice);
 		
-		g_iSpam[client] = GetTime()+g_cvar_RebuyCD.IntValue;
+		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -698,7 +703,7 @@ public Action Command_famas(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'FAMAS' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -713,13 +718,13 @@ public Action Command_nova(int client, int args)
 	
 	if (!g_cvar_Enable_Shotgun.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Shotgun' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "shotgun");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'Nova' {Default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "nova", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -729,7 +734,7 @@ public Action Command_nova(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Nova' {default}for {green}$%i", g_NovaPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "nova", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -745,7 +750,7 @@ public Action Command_nova(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Nova' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -757,13 +762,13 @@ public Action Command_xm1014(int client, int args)
 	
 	if (!g_cvar_Enable_Shotgun.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Shotgun' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "shotgun");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'XM-1014' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "xm", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -773,7 +778,7 @@ public Action Command_xm1014(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'XM-1014' {default}for {green}$%i", g_XM1014Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "xm", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -789,7 +794,7 @@ public Action Command_xm1014(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'XM-1014' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -801,13 +806,13 @@ public Action Command_mag7(int client, int args)
 	
 	if (!g_cvar_Enable_Shotgun.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Shotgun' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "shotgun");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'Mag-7' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "mag", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -817,7 +822,7 @@ public Action Command_mag7(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Mag-7' {default}for {green}$%i", g_Mag7Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "mag", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -833,7 +838,7 @@ public Action Command_mag7(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'XM-1014' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -845,13 +850,13 @@ public Action Command_sawed(int client, int args)
 	
 	if (!g_cvar_Enable_Shotgun.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Shotgun' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "shotgun");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'Sawed Off' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "sawed", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -861,9 +866,9 @@ public Action Command_sawed(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Sawed Off' {default}for {green}$%i", g_SawedOffPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "sawed", gunprice);
 
-		g_iSpam[client] = GetTime()+g_cvar_RebuyCD.IntValue;
+		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -877,7 +882,7 @@ public Action Command_sawed(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Sawed Off' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -892,13 +897,13 @@ public Action Command_mac10(int client, int args)
 	
 	if (!g_cvar_Enable_SMG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'SMG' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "smg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase {orange}'Mac-10' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "mac", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -908,7 +913,7 @@ public Action Command_mac10(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Mac-10' {default}for {green}$%i", g_Mac10Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "mac", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -924,7 +929,7 @@ public Action Command_mac10(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Mac-10' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -936,13 +941,13 @@ public Action Command_mp9(int client, int args)
 	
 	if (!g_cvar_Enable_SMG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'SMG' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "smg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'MP9' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "mp9", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -952,7 +957,7 @@ public Action Command_mp9(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'MP9' {default}for {green}$%i", g_Mp9Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "mp9", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -968,7 +973,7 @@ public Action Command_mp9(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'MP9' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -980,13 +985,13 @@ public Action Command_mp7(int client, int args)
 	
 	if (!g_cvar_Enable_SMG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'SMG' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "smg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase {orange}'MP7' {default} again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "mp7", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -996,7 +1001,7 @@ public Action Command_mp7(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'MP7' {default}for {green}$%i", g_Mp7Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "mp7", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -1012,7 +1017,7 @@ public Action Command_mp7(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'MP7' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1024,13 +1029,13 @@ public Action Command_mp5(int client, int args)
 	
 	if (!g_cvar_Enable_SMG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'SMG' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "smg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'MP5-SD' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "mp5", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1040,7 +1045,7 @@ public Action Command_mp5(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'MP5-SD' {default}for {green}$%i", g_MP5SDPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "mp5", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -1056,7 +1061,7 @@ public Action Command_mp5(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'MP5-SD' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1068,13 +1073,13 @@ public Action Command_ump45(int client, int args)
 	
 	if (!g_cvar_Enable_SMG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'SMG' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "smg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}}You can purchase an {orange}'UMP-45' {default} again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "ump", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1084,7 +1089,7 @@ public Action Command_ump45(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased an {orange}'UMP-45' {default}for {green}$%i", g_UMP45Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "ump", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -1100,7 +1105,7 @@ public Action Command_ump45(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase an {orange}'UMP-45' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1112,13 +1117,13 @@ public Action Command_bizon(int client, int args)
 	
 	if (!g_cvar_Enable_SMG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'SMG' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "smg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'PP-Bizon' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "bizon", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1128,7 +1133,7 @@ public Action Command_bizon(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'PP-Bizon' {default}for {green}$%i", g_BizonPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "bizon", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -1144,7 +1149,7 @@ public Action Command_bizon(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'PP-Bizon' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1156,13 +1161,13 @@ public Action Command_p90(int client, int args)
 	
 	if (!g_cvar_Enable_SMG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'SMG' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "smg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'P90' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "p90", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1172,7 +1177,7 @@ public Action Command_p90(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'P90' {default}for {green}$%i", g_P90Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "p90", gunprice);
 
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 
@@ -1188,7 +1193,7 @@ public Action Command_p90(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'P90' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1203,13 +1208,13 @@ public Action Command_m249(int client, int args)
 	
 	if (!g_cvar_Enable_MG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Machine Gun' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "lmg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'M249' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "m249", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1219,7 +1224,7 @@ public Action Command_m249(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'M249' {default}for {green}$%i", g_M249Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "m249", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -1235,7 +1240,7 @@ public Action Command_m249(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'M249' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1247,13 +1252,13 @@ public Action Command_negev(int client, int args)
 	
 	if (!g_cvar_Enable_MG.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Machine Gun' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "lmg");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'Negev' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "negev", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1263,9 +1268,9 @@ public Action Command_negev(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Negev' {default}for {green}$%i", g_NegevPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "negev", gunprice);
 		
-		g_iSpam[client] = GetTime()+g_cvar_RebuyCD.IntValue;
+		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1279,7 +1284,7 @@ public Action Command_negev(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Negev' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1294,13 +1299,13 @@ public Action Command_scar(int client, int args)
 	
 	if (!g_cvar_Enable_Sniper.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Sniper Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "sniper");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase {orange}'SCAR-20' {default}again in {green}%i {default}seconds.",g_iSpam[client]-GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "scar", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1310,7 +1315,7 @@ public Action Command_scar(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purhcased a {orange}'SCAR-20' {default}for {green}$%i", g_SCAR20Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "scar", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -1326,7 +1331,7 @@ public Action Command_scar(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'SCAR-20' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1338,13 +1343,13 @@ public Action Command_awp(int client, int args)
 	
 	if (!g_cvar_Enable_Sniper.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Sniper Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "sniper");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase an {orange}'AWP' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "awp", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1354,7 +1359,7 @@ public Action Command_awp(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased an {orange}'AWP' {default}for {green}$%i", g_AWPPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "awp", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -1370,7 +1375,7 @@ public Action Command_awp(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase an {orange}'AWP' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1382,13 +1387,13 @@ public Action Command_ssg08(int client, int args)
 	
 	if (!g_cvar_Enable_Sniper.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Sniper Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "sniper");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'SSG-08' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "ssg", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1398,7 +1403,7 @@ public Action Command_ssg08(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'SSG-08' {default}for {green}$%i", g_SSG08Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "ssg", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -1414,7 +1419,7 @@ public Action Command_ssg08(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'SSG-08' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1426,13 +1431,13 @@ public Action Command_g3sg1(int client, int args)
 	
 	if (!g_cvar_Enable_Sniper.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Sniper Rifle' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "sniper");
 		return Plugin_Handled;
 	}
 	
 	if (g_iSpam[client] > GetTime())
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {default}You can purchase a {orange}'G3SG1' {default}again in {green}%i {default}seconds.", g_iSpam[client] - GetTime());
+		CPrintToChat(client, "%t", "Purchase Cooldown", "Plugin Prefix", "g3sg1", g_iSpam[client] - GetTime());
 		return Plugin_Handled;
 	}
 	
@@ -1442,7 +1447,7 @@ public Action Command_g3sg1(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'G3SG1' {default}for {green}$%i", g_G3SG1Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "g3sg1", gunprice);
 		
 		g_iSpam[client] = GetTime() + g_cvar_RebuyCD.IntValue;
 		
@@ -1458,7 +1463,7 @@ public Action Command_g3sg1(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'G3SG1' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1473,7 +1478,7 @@ public Action Command_usp(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1483,7 +1488,7 @@ public Action Command_usp(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'USP-S' {default}for {green}$%i", g_USPPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "usp", gunprice);
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1497,7 +1502,7 @@ public Action Command_usp(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase an {orange}'USP-S' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1509,7 +1514,7 @@ public Action Command_glock(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1519,7 +1524,7 @@ public Action Command_glock(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Glock-18' {default}for {green}$%i", g_GLOCKPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "glock", gunprice);
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1533,7 +1538,7 @@ public Action Command_glock(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Glock-18' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1545,7 +1550,7 @@ public Action Command_p250(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1555,7 +1560,7 @@ public Action Command_p250(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'P250' {default}for {green}$%i", g_P250Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "p250", gunprice);
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1569,7 +1574,7 @@ public Action Command_p250(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'P250' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1581,7 +1586,7 @@ public Action Command_deag(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1591,7 +1596,7 @@ public Action Command_deag(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Desert Eagle' {default}for {green}$%i", g_DeagPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "deagle", gunprice);
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1605,7 +1610,7 @@ public Action Command_deag(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Desert Eagle' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1617,7 +1622,7 @@ public Action Command_tec9(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1627,7 +1632,7 @@ public Action Command_tec9(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Tec-9' {default}for {green}$%i", g_Tec9Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "tec9", gunprice);
 
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1641,7 +1646,7 @@ public Action Command_tec9(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Tec-9' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1653,7 +1658,7 @@ public Action Command_p2k(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1663,21 +1668,11 @@ public Action Command_p2k(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'HKP2000' {default}for {green}$%i", g_P2KPrice.IntValue);
-		
-		if (g_cvar_DropOnRebuy.BoolValue)
-		{
-			int weapon = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
-			if (weapon != -1)
-			{
-				SDKHooks_DropWeapon(client, weapon);
-				GivePlayerItem(client, "weapon_hkp2000");
-			}
-			else GivePlayerItem(client, "weapon_hkp2000");
-		}
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "p2000", gunprice);
+		GiveP2000(client);
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'HKP2000' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1689,7 +1684,7 @@ public Action Command_elites(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1699,7 +1694,7 @@ public Action Command_elites(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased {orange}'Dual Elites' {default}for {green}$%i", g_ELITEPrice.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "elites", gunprice);
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1713,7 +1708,7 @@ public Action Command_elites(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase {orange}'Dual Elites' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1725,7 +1720,7 @@ public Action Command_57(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1735,7 +1730,7 @@ public Action Command_57(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Five-Seven' {default}for {green}$%i", g_F7Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "fiveseven", gunprice);
 
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1749,7 +1744,7 @@ public Action Command_57(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Five-Seven' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1761,7 +1756,7 @@ public Action Command_r8(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1771,7 +1766,7 @@ public Action Command_r8(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}you purchased a {orange}'R8-Revolver' {default}for {green}$%i", g_R8Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "r8", gunprice);
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1785,7 +1780,7 @@ public Action Command_r8(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'R8-Revolver' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1797,7 +1792,7 @@ public Action Command_cz(int client, int args)
 	
 	if (!g_cvar_Enable_Pistol.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Pistol' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "pistol");
 		return Plugin_Handled;
 	}
 	
@@ -1807,7 +1802,7 @@ public Action Command_cz(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
-		CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'CZ-75' {default}for {green}$%i", g_CZ7Price.IntValue);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "cz", gunprice);
 		
 		if (g_cvar_DropOnRebuy.BoolValue)
 		{
@@ -1821,7 +1816,7 @@ public Action Command_cz(int client, int args)
 		}
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'CZ-75' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1836,7 +1831,7 @@ public Action Command_armor(int client, int args)
 	
 	if (!g_cvar_Enable_Kevlar.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Kevlar' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "Purchase Disabled", "Plugin Prefix", "armor");
 		return Plugin_Handled;
 	}
 	
@@ -1846,11 +1841,12 @@ public Action Command_armor(int client, int args)
 	if (cmoney > gunprice)
 	{
 		SetClientMoney(client, cmoney - gunprice);
+		CPrintToChat(client, "%t", "Purchase", "Plugin Prefix", "armor", gunprice);
 		SetEntProp(client, Prop_Send, "m_ArmorValue", 100);
 		SetEntProp(client, Prop_Send, "m_bHasHelmet", 1);
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to replenish your {orange}'kevlar' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1865,7 +1861,7 @@ public Action Command_he(int client, int args)
 	
 	if (!g_cvar_Enable_HE.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'HE Grenade' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "he");
 		return Plugin_Handled;
 	}
 	
@@ -1879,12 +1875,12 @@ public Action Command_he(int client, int args)
 			SetClientMoney(client, cmoney - gunprice);
 			HEGrenade(client);
 			g_iHEAmount[client] += 1;
-			CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'HE Grenade' {default}for {green}$%i {default}(Remaining purchases: {green}%i{default})", g_HEPrice.IntValue, g_HEAmount.IntValue - g_iHEAmount[client]);
+			CPrintToChat(client, "%t", "Purchase Remaining", "Plugin Prefix", "he", gunprice, g_HEAmount.IntValue - g_iHEAmount[client]);
 		}
-		else CPrintToChat(client, "{green}[Buy Commands] {default}You can only purchase a maximum of {green}%i {orange}'HE Grenades' {default}per round.", g_HEAmount.IntValue);
+		else CPrintToChat(client, "%t", "Max Amount Purchased", "Plugin Prefix", g_HEAmount.IntValue, "he"); 
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'HE Grenade' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1896,7 +1892,7 @@ public Action Command_flash(int client, int args)
 	
 	if (!g_cvar_Enable_Flash.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Flashbang Grenades' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "fb");
 		return Plugin_Handled;
 	}
 	
@@ -1910,12 +1906,12 @@ public Action Command_flash(int client, int args)
 			SetClientMoney(client, cmoney - gunprice);
 			FlashBang(client);
 			g_iFlashAmount[client] += 1;
-			CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Flashbang' {default}for {green}$%i {default}(Remaining purchases: {green}%i{default})", g_FlashPrice.IntValue, g_FlashAmount.IntValue - g_iFlashAmount[client]);
+			CPrintToChat(client, "%t", "Purchase Remaining", "Plugin Prefix", "fb", gunprice, g_FlashAmount.IntValue - g_iFlashAmount[client]);
 		}
-		else CPrintToChat(client, "{green}[Buy Commands] {default}You can only purchase a maximum of {green}%i {orange}'Flashbang Grenades' {default}per round.", g_FlashAmount.IntValue);
+		else CPrintToChat(client, "%t", "Max Amount Purchased", "Plugin Prefix", g_FlashAmount.IntValue, "fb");
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Flashbang Grenade' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1927,7 +1923,7 @@ public Action Command_decoy(int client, int args)
 	
 	if (!g_cvar_Enable_Decoy.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Decoy Grenades' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "de");
 		return Plugin_Handled;
 	}
 	
@@ -1941,12 +1937,12 @@ public Action Command_decoy(int client, int args)
 			SetClientMoney(client, cmoney - gunprice);
 			DecoyNade(client);
 			g_iDecoyAmount[client] += 1;
-			CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Decoy Grenade' {default}for {green}$%i {default}(Remaining purchases: {green}%i{default})", g_DecoyPrice.IntValue, g_DecoyAmount.IntValue - g_iDecoyAmount[client]);
+			CPrintToChat(client, "%t", "Purchase Remaining", "Plugin Prefix", "de", gunprice, g_DecoyAmount.IntValue - g_iDecoyAmount[client]);
 		}
-		else CPrintToChat(client, "{green}[Buy Commands] {default}You can only purchase a maximum of {green}%i {orange}'Decoy Grenades' {default}per round.", g_DecoyAmount.IntValue);
+		else CPrintToChat(client, "%t", "Max Amount Purchased", "Plugin Prefix", g_DecoyAmount.IntValue, "de");
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Decoy Grenade' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1958,7 +1954,7 @@ public Action Command_incendiary(int client, int args)
 	
 	if (!g_cvar_Enable_Inc.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Incendiary Grenade' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "inc");
 		return Plugin_Handled;
 	}
 	
@@ -1972,12 +1968,12 @@ public Action Command_incendiary(int client, int args)
 			SetClientMoney(client, cmoney - gunprice);
 			IncGrenade(client);
 			g_iIncAmount[client] += 1;
-			CPrintToChat(client, "{green}[Buy Commands] {default}You purchased an {orange}'Incendiary Grenade' {default}for {green}$%i {default}(Remaining purchases: {green}%i{default})", g_IncPrice.IntValue, g_IncAmount.IntValue - g_iIncAmount[client]);
+			CPrintToChat(client, "%t", "Purchase Remaining", "Plugin Prefix", "inc", gunprice, g_IncAmount.IntValue - g_iIncAmount[client]);
 		}
-		else CPrintToChat(client, "{green}[Buy Commands] {default}You can only purchase a maximum of {green}%i {orange}'Incendiary Grenades' {default}per round.", g_DecoyAmount.IntValue);
+		else CPrintToChat(client, "%t", "Max Amount Purchased", "Plugin Prefix", g_IncAmount.IntValue, "inc");
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase an {orange}'Incendiary Grenade' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -1989,7 +1985,7 @@ public Action Command_snowball(int client, int args)
 	
 	if (!g_cvar_Enable_Snow.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'Snowball' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "snow");
 		return Plugin_Handled;
 	}
 	
@@ -2003,12 +1999,12 @@ public Action Command_snowball(int client, int args)
 			SetClientMoney(client, cmoney - gunprice);
 			Snowball(client);
 			g_iSnowAmount[client] += 1;
-			CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'Snowball' {default}for {green}$%i {default}(Remaining purchases: {green}%i{default})", g_SnowPrice.IntValue, g_SnowAmount.IntValue - g_iSnowAmount[client]);
+			CPrintToChat(client, "%t", "Purchase Remaining", "Plugin Prefix", "snow", gunprice, g_SnowAmount.IntValue - g_iSnowAmount[client]);
 		}
-		else CPrintToChat(client, "{green}[Buy Commands] {default}You can only purchase a maximum of {green}%i {orange}'Snowballs' {default}per round.", g_SnowAmount.IntValue);
+		else CPrintToChat(client, "%t", "Max Amount Purchased", "Plugin Prefix", g_SnowAmount.IntValue, "snow");
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'Snowball' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -2020,7 +2016,7 @@ public Action Command_TagGrenade(int client, int args)
 	
 	if (!g_cvar_Enable_Tag.BoolValue)
 	{
-		CPrintToChat(client, "{green}[Buy Commands] {orange}'TA Grenade' {default}purchases have been {red}disabled");
+		CPrintToChat(client, "%t", "Purchase Disabled", "Plugin Prefix", "tag");
 		return Plugin_Handled;
 	}
 	
@@ -2034,12 +2030,12 @@ public Action Command_TagGrenade(int client, int args)
 			SetClientMoney(client, cmoney - gunprice);
 			TagGrenade(client);
 			g_iTagAmount[client] += 1;
-			CPrintToChat(client, "{green}[Buy Commands] {default}You purchased a {orange}'TA Grenade' {default}for {green}$%i {default}(Remaining purchases: {green}%i{default})", g_TagPrice.IntValue, g_TagAmount.IntValue - g_iTagAmount[client]);
+			CPrintToChat(client, "%t", "Purchase Remaining", "Plugin Prefix", "tag", gunprice, g_TagAmount.IntValue - g_iTagAmount[client]);
 		}
-		else CPrintToChat(client, "{green}[Buy Commands] {default}You can only purchase a maximum of {green}%i {orange}'TA Grenade' {default}per round.", g_SnowAmount.IntValue);
+		else CPrintToChat(client, "%t", "Max Amount Purchased", "Plugin Prefix", g_TagAmount.IntValue, "tag");
 	}
 	else if (cmoney < gunprice)
-		CPrintToChat(client, "{green}[Buy Commands] {default}You do not have enough money to purchase a {orange}'TA Grenade' {default}(Missing {green}$%i{default})", gunprice - cmoney);
+		CPrintToChat(client, "%t", "Not Enough Money", "Plugin Prefix", gunprice - cmoney);
 	
 	return Plugin_Handled;
 }
@@ -2105,4 +2101,43 @@ public void Snowball(int client)
 	if (current2 == 0)
 		GivePlayerItem(client, "weapon_snowball");
 	else SetEntData(client, offset2, current2 + 1);
+}
+
+//==============================
+// P2000 FIX (Thanks tilgep!)
+//------------------------------
+public void GiveP2000(int client)
+{
+	// Spawn p2000
+	int wep = CreateEntityByName("weapon_hkp2000");
+	if (wep == -1)
+	{
+		LogError("[BuyCommands] Failed to create a valid weapon entity.");
+	}
+
+	// Find origin offset
+	int offset = FindDataMapInfo(wep, "m_vecOrigin");
+	if (offset == -1)
+	{
+		LogError("[BuyCommands] Failed to find a valid offset for origin.");
+		RemoveEntity(wep);
+	}
+
+	// Move p2000 to player (doesnt spawn in the void)
+	float o[3];
+	GetClientAbsOrigin(client, o);
+	SetEntDataVector(wep, offset, o);
+
+	// Spawn it
+	if (!DispatchSpawn(wep))
+	{
+		LogError("[BuyCommands] Failed to dispatch weapon.");
+		RemoveEntity(wep);
+	}
+
+	// Drop current weapon and give p2000 to client
+	int currentWeapon = GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY);
+	if (currentWeapon != -1) SDKHooks_DropWeapon(client, currentWeapon);
+
+	EquipPlayerWeapon(client, wep);
 }
